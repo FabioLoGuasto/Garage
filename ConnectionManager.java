@@ -15,11 +15,11 @@ public class ConnectionManager {
 	private Connection conn;
 	
 	//JDBC driver name and database URL
-	static final String DB_URL = "jdbc:mysql://127.0.0.1/garage?serverTimezone=Europe/Rome&useSSL=false";
+	static final String DB_URL = "******";
 		
 	// DATABASE CREDENTIAL
-	static final String USER = "root";
-	static final String PASS = "truzzo130866";
+	static final String USER = "*****";
+	static final String PASS = "*****";
 	
 	/**
 	 * Quando mi crea l'istanza la prima volta mi crea la connessione 

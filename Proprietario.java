@@ -2,7 +2,13 @@ package esercizioGarage_conDatabase;
 
 public class Proprietario {
 	
+	/**
+	 * owner's car fiscale code
+	 */
 	private String cf;
+	/**
+	 * number plate of owner's car
+	 */
 	private String plateNumber;
 	
 	public Proprietario() {}

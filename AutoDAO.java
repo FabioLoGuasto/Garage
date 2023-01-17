@@ -269,87 +269,89 @@ public class AutoDAO {
 	
 	
 	/**
-	 * DATA LA TARGA COME PARAMETRO RITORNO ORARIO USCITA
-	 * @param targa: 
-	 * @return orarioUscita:
+	 * given the number plate of car, get his exit hour in the garage
+	 * @param numberPlate : number plate of the car that has left the garage
+	 * @return exitTimeCar : time of exit of car
 	 */
-	public static String returnOrarioUscita(String targa){
-		String orarioUscita = " ";
+	public static String returnOrarioUscita(String numberPlate){
+		String exitTimeCar = " ";
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT targa,orario_uscita FROM auto WHERE targa ='")
-		.append(targa)
+		.append(numberPlate)
 		.append("' ");
 		
 		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
 			ResultSet rs = stmt.executeQuery(sb.toString());
 			
 			while(rs.next()) { 
-				orarioUscita = rs.getString("orario_uscita");
+				exitTimeCar = rs.getString("orario_uscita");
 			}
 //			System.out.println("L'ORARIO DI USCITA DELL'AUTO E' " + orarioUscita);
 		}catch(Exception e) {
 			System.out.println("got an Exception!");
 			System.out.println(e.getMessage());
 		}
-		return orarioUscita;
+		return exitTimeCar;
 	}
 	
 	
 	
 	/**
-	 * 480 EQUIVALE AD 8 ORE
-	 * @param entrata
-	 * @param uscita
-	 * @return DIFFERENZA TRA ENTRATA ED USCITA IN MINUTI
+	 * This method calculate the minutes that the car stay into the parking
+	 * The minutes max that the car can staying in the parking is 480, after that the owner of the car will pay the penalty 
+	 * @param entry : hours of car entry to the garage
+	 * @param exit : hours of car exit to the garage
+	 * @return totMinutes : total minutes of the car parking
 	 */
-	public static int timingParcheggio(String entrata, String uscita) {
-		LocalTime timeEntrata = LocalTime.parse(entrata);
-		LocalTime timeUscita = LocalTime.parse(uscita);
-		Duration timeDifferenza = Duration.between(timeUscita, timeEntrata);
-		timeDifferenza = timeDifferenza.abs();
-		int timeMinutiTotali = (int)timeDifferenza.toMinutes();
+	public static int timingParcheggio(String entry, String exit) {
+		LocalTime timeEntrata = LocalTime.parse(entry);
+		LocalTime timeUscita = LocalTime.parse(exit);
+		Duration timeDifferent = Duration.between(timeUscita, timeEntrata);
+		timeDifferent = timeDifferent.abs();
+		int totMinutes = (int)timeDifferent.toMinutes();
 //		System.out.println("I MINUTI TOTALI SONO : " + timeDifferenza.toMinutes()); //FA VEDERE I MINUTI
-		return timeMinutiTotali;
+		return totMinutes;
 	}
 	
 	
 	
 	/**
-	 * DATI I MINUTI TOTALI ED IL COSTO DEL PARCHEGGIO DI UNA DATA CATEGORIA CALCOLO LA TARIFFA
-	 * @param timeMinutiTotali
-	 * @param tariffaPostoOrarioAutoLusso
-	 * @return 
+	 * given the total minutes of the car parking and the price of the parking category, this method calculate the price parking  
+	 * @param totalMinutes : result of timingParcheggio method
+	 * @param priceParkingCategory : price of the car category for example: ("auto normale","auto lusso", "auto van")
+	 * @return toPay : price of parking to pay
 	 */
-	public static double tariffaParcheggio(int timeMinutiTotali, double tariffaPostoOrario) {
-		double costoParcheggioOra = timeMinutiTotali / 60 ;
-		double costoParcheggio = costoParcheggioOra * tariffaPostoOrario;
-		System.out.println("IL COSTO DEL PARCHEGGIO E' " + costoParcheggio + " €");
-		return costoParcheggio;
+	public static double tariffaParcheggio(int totalMinutes, double priceParkingCategory) {
+		double priceParkingForOneHour = totalMinutes / 60 ;
+		double toPay = priceParkingForOneHour * priceParkingCategory;
+		System.out.println("THE PRICE OF PARKING TO PAY IS : " + toPay + " €");
+		return toPay;
 	}
 	
 	
 	/**
-	 * CALCOLO TARIFFA IN CASO DI SUPERAMENTO DELLE 8 ORE DEL PARCHEGGIO
-	 * @param timeMinutiTotali
-	 * @param tariffaPostoOrarioAutoLusso
-	 * @param tariffPenalePostoOrarioAutoLusso
+	 * calculation penalty price in case of exceeding minutes 
+	 * The max minutes allowed are 480
+	 * @param totalMinutes : result of timingParcheggio method
+	 * @param ordinaryPay : result of tariffaParcheggio method
+	 * @param penaltyPriceCategory : price of selected category
 	 * @return
 	 */
-	public static void tariffaParcheggioConPenale(int timeMinutiTotali, double costoParcheggio, int tariffPenalePostoOrario) {
-		double tariffaTotale = 0.0;
+	public static void tariffaParcheggioConPenale(int totalMinutes, double ordinaryPay, int penaltyPriceCategory) {
+		double toPay = 0.0;
 		
-		if(timeMinutiTotali > 480) {
-			int minutiTotaliSforati = timeMinutiTotali - 480;
-			double tariffaPenaleDaPagare = ((minutiTotaliSforati / 30) * tariffPenalePostoOrario);
-			tariffaTotale = tariffaPenaleDaPagare + costoParcheggio;
-			System.out.println("LA TARIFFA CON PENALE E' : " + tariffaTotale + " €");
+		if(totalMinutes > 480) {
+			int minutesOver = totalMinutes - 480;
+			double penaltyToPay = ((minutesOver / 30) * penaltyPriceCategory);
+			toPay = penaltyToPay + ordinaryPay;
+			System.out.println("THE PARKING PRICE WITH PENALTY IS : " + toPay + " €");
 		}	
 	}
 	
 	
 	
-	
+//------------------------------------------------ TEST ----------------------------------------------------------------------	
 //	/**
 //	 * UPDATE CON GUIDA
 //	 * @param a
