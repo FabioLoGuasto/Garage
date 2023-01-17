@@ -238,29 +238,29 @@ public class AutoDAO {
 	
 	//------------------------------------------------------------------------------------------------ARRIVATO QUA CON DOCUMENTAZIONE
 	/**
-	 * given the number plate of car, get his entry hour
-	 * @return orarioEntrata
+	 * given the number plate of car, get his entry hour in the garage
+	 * @return entryTimeCar : time of arrived of car
 	 */
-	public static String returnOrarioEntrata(String targa){
-		String orarioEntrata = " ";
+	public static String returnOrarioEntrata(String numberPlate){
+		String entryTimeCar = " ";
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT targa,orario_entrata FROM auto WHERE targa ='")
-		.append(targa)
+		.append(numberPlate)
 		.append("' ");
 		
 		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
 			ResultSet rs = stmt.executeQuery(sb.toString());
 			
 			while(rs.next()) { 
-				orarioEntrata = rs.getString("orario_entrata");
+				entryTimeCar = rs.getString("orario_entrata");
 			}
 //			System.out.println("L'ORARIO DI ENTRATA DELL'AUTO E' " + orarioEntrata);
 		}catch(Exception e) {
 			System.out.println("got an Exception!");
 			System.out.println(e.getMessage());
 		}
-		return orarioEntrata;
+		return entryTimeCar;
 	}
 	
 	
