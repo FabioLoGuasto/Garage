@@ -22,8 +22,8 @@ public class PostoDAO {
 		.append("' ");
 
 		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
-			int rowAffected = stmt.executeUpdate(sb.toString());
-			System.out.println("Righe modificate : " + rowAffected);
+			stmt.executeUpdate(sb.toString());
+			System.out.println("PARKING NUMBER : " + numberParking + " IS YOURS !!");
 		}catch(Exception e) {
 			System.out.println("got an Exception!");
 			System.out.println(e.getMessage());
@@ -47,7 +47,7 @@ public class PostoDAO {
 		
 		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
 			int rowAffected = stmt.executeUpdate(sb.toString());
-			System.out.println("Righe modificate : " + rowAffected);
+			System.out.println("THE PARKING NUMBER: " + numberParking + " IS FREE");
 		}catch(Exception e) {
 			System.out.println("got an Exception!");
 			System.out.println(e.getMessage());
