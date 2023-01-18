@@ -265,7 +265,7 @@ public class TestSql {
 				break;
 			case 9:
 				exit = false;
-				System.out.println("BYE");
+				System.out.println("BYE, HAVE A NICE DAY");
 				break;
 			default:
 				System.out.println("DATA ENTRY ERROR, TRY AGAIN");
