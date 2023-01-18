@@ -112,8 +112,8 @@ public class AutoDAO {
 		
 		
 		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
-			int rowAffected = stmt.executeUpdate(sb.toString());
-			System.out.println("Inserted rows : " + rowAffected);	
+			stmt.executeUpdate(sb.toString());
+			System.out.println("AUTO ENTRY COMPLETED");	
 		}catch(Exception e) {
 			System.out.println("got an Exception!");
 			System.out.println(e.getMessage());
@@ -148,8 +148,8 @@ public class AutoDAO {
 //		System.out.println(sb);
 		
 		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
-			int rowAffected = stmt.executeUpdate(sb.toString());
-			System.out.println("Modified rows : " + rowAffected);
+			stmt.executeUpdate(sb.toString());
+			System.out.println("EDIT COMPLETED");
 		}catch(Exception e) {
 			System.out.println("got an Exception!");
 			System.out.println(e.getMessage());
@@ -169,8 +169,8 @@ public class AutoDAO {
 		System.out.println(query);
 		
 		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
-			int rowAffected = stmt.executeUpdate(query);
-			System.out.println("Delete rows : " + rowAffected);
+			stmt.executeUpdate(query);
+			System.out.println("DELETE COMPLETED");
 		}catch(Exception e) {
 			System.out.println("got an Exception!");
 			System.out.println(e.getMessage());
@@ -181,26 +181,50 @@ public class AutoDAO {
 
 	
 	/**
-	 * this method set the field is_deleted = 0 and the field orario_uscita
+	 * this method set the field is_deleted = 0 
 	 * on the table of database, because the car exit of garage.
 	 * update the history of garage
 	 * @param exitTime : hours exit of the car
 	 * @param numberPlate : number of the selected car plate 
 	 */
-	public static void updateUscitaAuto (String exitTime, String numberPlate) {
+	public static void updateIsDeletedAuto (String numberPlate) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE auto SET ")
-		.append(" orario_uscita = '")
-		.append(exitTime)
-		.append("', is_deleted = ")
+		.append("is_deleted = ")
 		.append(0)
 		.append(" WHERE targa = '")
 		.append(numberPlate)
 		.append("'");
 		
 		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
-			int rowAffected = stmt.executeUpdate(sb.toString());
-			System.out.println("Modified rows : " + rowAffected);
+			stmt.executeUpdate(sb.toString());
+			System.out.println("UPDATE HISTORY OF GARAGE COMPLETED");
+		}catch(Exception e) {
+			System.out.println("got an Exception!");
+			System.out.println(e.getMessage());
+		}
+	}
+	
+		
+	/**
+	 * this method set the field orario_uscita
+	 * on the table of database, because the car exit of garage.
+	 * update the history of garage
+	 * @param exitTime : hours exit of the car
+	 * @param numberPlate : number of the selected car plate 
+	 */
+	public static void updateOrarioUscitaAuto (String exitTime, String numberPlate) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("UPDATE auto SET ")
+		.append(" orario_uscita = '")
+		.append(exitTime)
+		.append("' WHERE targa = '")
+		.append(numberPlate)
+		.append("'");
+		
+		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
+			stmt.executeUpdate(sb.toString());
+			System.out.println("INSERT EXIT TIME AND UPDATE HISTORY OF GARAGE COMPLETED");
 		}catch(Exception e) {
 			System.out.println("got an Exception!");
 			System.out.println(e.getMessage());
@@ -212,6 +236,7 @@ public class AutoDAO {
 	
 	/**
 	 * given the number plate of car, get his number of parking 
+	 * @param numberPlate : number plate of the car that arrived in the garage
 	 * @return parking : number of the car parking occuped
 	 */
 	public static int returnPosto(String numberPlate){
@@ -236,9 +261,10 @@ public class AutoDAO {
 	}
 	
 	
-	//------------------------------------------------------------------------------------------------ARRIVATO QUA CON DOCUMENTAZIONE
+	
 	/**
 	 * given the number plate of car, get his entry hour in the garage
+	 * @param numberPlate : number plate of the car that arrived in the garage
 	 * @return entryTimeCar : time of arrived of car
 	 */
 	public static String returnOrarioEntrata(String numberPlate){
@@ -267,87 +293,81 @@ public class AutoDAO {
 	
 	
 	/**
-	 * DATA LA TARGA COME PARAMETRO RITORNO ORARIO USCITA
-	 * @param targa: 
-	 * @return orarioUscita:
+	 * given the number plate of car, get his exit hour in the garage
+	 * @param numberPlate : number plate of the car that has left the garage
+	 * @return exitTimeCar : time of exit of car
 	 */
-	public static String returnOrarioUscita(String targa){
-		String orarioUscita = " ";
+	public static String returnOrarioUscita(String numberPlate){
+		String exitTimeCar = " ";
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT targa,orario_uscita FROM auto WHERE targa ='")
-		.append(targa)
+		.append(numberPlate)
 		.append("' ");
 		
 		try (Statement stmt = ConnectionManager.getInstance().getConnection().createStatement()){
 			ResultSet rs = stmt.executeQuery(sb.toString());
 			
 			while(rs.next()) { 
-				orarioUscita = rs.getString("orario_uscita");
+				exitTimeCar = rs.getString("orario_uscita");
 			}
 //			System.out.println("L'ORARIO DI USCITA DELL'AUTO E' " + orarioUscita);
 		}catch(Exception e) {
 			System.out.println("got an Exception!");
 			System.out.println(e.getMessage());
 		}
-		return orarioUscita;
+		return exitTimeCar;
 	}
 	
 	
 	
 	/**
-	 * 480 EQUIVALE AD 8 ORE
-	 * @param entrata
-	 * @param uscita
-	 * @return DIFFERENZA TRA ENTRATA ED USCITA IN MINUTI
+	 * This method calculate the minutes that the car stay into the parking
+	 * The minutes max that the car can staying in the parking is 480, after that the owner of the car will pay the penalty 
+	 * @param entry : hours of car entry to the garage
+	 * @param exit : hours of car exit to the garage
+	 * @return totMinutes : total minutes of the car parking
 	 */
-	public static int timingParcheggio(String entrata, String uscita) {
-		LocalTime timeEntrata = LocalTime.parse(entrata);
-		LocalTime timeUscita = LocalTime.parse(uscita);
-		Duration timeDifferenza = Duration.between(timeUscita, timeEntrata);
-		timeDifferenza = timeDifferenza.abs();
-		int timeMinutiTotali = (int)timeDifferenza.toMinutes();
+	public static int timingParcheggio(String entry, String exit) {
+		LocalTime timeEntrata = LocalTime.parse(entry);
+		LocalTime timeUscita = LocalTime.parse(exit);
+		Duration timeDifferent = Duration.between(timeUscita, timeEntrata);
+		timeDifferent = timeDifferent.abs();
+		int totMinutes = (int)timeDifferent.toMinutes();
 //		System.out.println("I MINUTI TOTALI SONO : " + timeDifferenza.toMinutes()); //FA VEDERE I MINUTI
-		return timeMinutiTotali;
+		return totMinutes;
 	}
 	
 	
 	
 	/**
-	 * DATI I MINUTI TOTALI ED IL COSTO DEL PARCHEGGIO DI UNA DATA CATEGORIA CALCOLO LA TARIFFA
-	 * @param timeMinutiTotali
-	 * @param tariffaPostoOrarioAutoLusso
-	 * @return 
+	 * given the total minutes of the car parking, the price of the parking category and  
+	 * penalty price in case of exceeding minutes, this method calculate the price parking
+	 * even in case of excess hours
+	 * The max minutes allowed are 8 hours
+	 * The customer will pay the penalty every 30 minutes based on the category of the car 
+	 * @param totalMinutes : result of timingParcheggio method
+	 * @param priceParkingCategory : price of the car category for example: ("auto normale","auto lusso", "auto van")
+	 * @param penaltyPriceCategory : penalty price of selected category
 	 */
-	public static double tariffaParcheggio(int timeMinutiTotali, double tariffaPostoOrario) {
-		double costoParcheggioOra = timeMinutiTotali / 60 ;
-		double costoParcheggio = costoParcheggioOra * tariffaPostoOrario;
-		System.out.println("IL COSTO DEL PARCHEGGIO E' " + costoParcheggio + " €");
-		return costoParcheggio;
-	}
-	
-	
-	/**
-	 * CALCOLO TARIFFA IN CASO DI SUPERAMENTO DELLE 8 ORE DEL PARCHEGGIO
-	 * @param timeMinutiTotali
-	 * @param tariffaPostoOrarioAutoLusso
-	 * @param tariffPenalePostoOrarioAutoLusso
-	 * @return
-	 */
-	public static void tariffaParcheggioConPenale(int timeMinutiTotali, double costoParcheggio, int tariffPenalePostoOrario) {
-		double tariffaTotale = 0.0;
+	public static void tariffaParcheggio(int totalMinutes, double priceParkingCategory, int penaltyPriceCategory) {
+		double toPay = 0.0;
+		int minutesOver = 0;
+		double penaltyToPay = 0.0;
 		
-		if(timeMinutiTotali > 480) {
-			int minutiTotaliSforati = timeMinutiTotali - 480;
-			double tariffaPenaleDaPagare = ((minutiTotaliSforati / 30) * tariffPenalePostoOrario);
-			tariffaTotale = tariffaPenaleDaPagare + costoParcheggio;
-			System.out.println("LA TARIFFA CON PENALE E' : " + tariffaTotale + " €");
-		}	
+		int totHours = totalMinutes / 60 ;
+		if (totHours <= 8) {
+			toPay = totHours * priceParkingCategory;
+			System.out.println("THE PRICE OF PARKING TO PAY IS : " + toPay + " €");
+		}else {
+			minutesOver = totalMinutes - 480;
+			penaltyToPay = ((minutesOver / 30) * penaltyPriceCategory);
+			toPay = penaltyToPay + ((480/60)*priceParkingCategory);
+			System.out.println("THE PARKING PRICE WITH PENALTY IS : " + toPay + " €");
+		}
 	}
 	
-	
-	
-	
+//------------------------------------------------ TEST ----------------------------------------------------------------------	
 //	/**
 //	 * UPDATE CON GUIDA
 //	 * @param a
