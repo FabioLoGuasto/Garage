@@ -102,6 +102,7 @@ public class TestSql {
 				exitTime = AutoDAO.returnOrarioUscita(insert); // RETURN EXIT TIME 
 				
 				categoryParking = CategoriaPostoDAO.getCategoria(insert);  // RETURN CATEGORY PARKING
+
 				hourlyPrice = CategoriaPostoDAO.getPrezzoOrario(categoryParking); 
 				penaltyPrice = CategoriaPostoDAO.getPrezzoPenale(categoryParking); 
 				
@@ -109,8 +110,9 @@ public class TestSql {
 				int posto = AutoDAO.returnPosto(insert); 
 				System.out.println();
 				
+
 				PostoDAO.updatePostoLibero(posto); // UPDATE PARKING - PARKING FREE
-				System.out.println();
+
 				
 				// PAGAMENTO PARCHEGGIO
 				totalMinutes = AutoDAO.timingParcheggio(entryTime, exitTime);
@@ -166,6 +168,7 @@ public class TestSql {
 						a1.setEntryTime(insert);
 						a1.setIsDeleted(1); // DEFAULT 1 FOR SET PARKING PLACE BUSY
 						System.out.println("INSERT THE PARKING NUMBER CHOSEN BETWEEN THOSE FREE:"); // RETURN PARKING BY CATEGORY CAR
+
 						insertNumber = scanner.nextInt();
 						a1.setParkingId(insertNumber);
 						
@@ -219,6 +222,7 @@ public class TestSql {
 						System.out.println("INSERT THE ENTRY TIME DIVIDED BY:");
 						insert = scanner.next();scanner.nextLine();
 						a1.setEntryTime(insert);
+
 						a1.setIsDeleted(1); // INSERT 1 FOR POINT TO PARKING BUSY
 						System.out.println("INSERT THE PARKING NUMBER CHOSEN BETWEEN THOSE FREE :"); // RETURN PARKING BY CATEGORY CAR
 						insertNumber = scanner.nextInt();
@@ -265,7 +269,7 @@ public class TestSql {
 				break;
 			case 9:
 				exit = false;
-				System.out.println("BYE");
+				System.out.println("BYE, HAVE A NICE DAY");
 				break;
 			default:
 				System.out.println("DATA ENTRY ERROR, TRY AGAIN");
@@ -273,6 +277,7 @@ public class TestSql {
 			}
 		
 		}while (exit);
+
 	}
 	
 	
