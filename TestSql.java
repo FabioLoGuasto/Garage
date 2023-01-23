@@ -61,7 +61,7 @@ public class TestSql {
 				break;
 			case 3:
 				System.out.println("SELECT ONE CAR AND UPDATE ONE FIELDS");
-				Auto autoDaModificare = autodao.selectOne(1); // SELEZIONO UN AUTO
+				Auto autoDaModificare = autodao.selectOne(1); // SELECT CAR
 				autoDaModificare.setEmissionType("********");
 				AutoDAO.update(autoDaModificare);
 				
@@ -95,13 +95,13 @@ public class TestSql {
 				insert = scanner.next(); scanner.nextLine();
 				System.out.println("INSERT THE EXIT TIME DIVIDED BY:");
 				exitTime = scanner.next(); scanner.nextLine();
-				AutoDAO.updateOrarioUscitaAuto(exitTime,insert); // INSERISCE ORARIO DI USCITA		
+				AutoDAO.updateOrarioUscitaAuto(exitTime,insert); // INSERT EXIT TIME	
 				
 				System.out.println("PAY PARKING");
-				entryTime = AutoDAO.returnOrarioEntrata(insert);  // RITORNA ORARIO ENTRATA
-				exitTime = AutoDAO.returnOrarioUscita(insert); // RITORNA ORARIO USCITA
+				entryTime = AutoDAO.returnOrarioEntrata(insert);  // RETURN ENTRY TIME 
+				exitTime = AutoDAO.returnOrarioUscita(insert); // RETURN EXIT TIME 
 				
-				categoryParking = CategoriaPostoDAO.getCategoria(insert);  // RITORNA CATEGORIA PARCHEGGIO
+				categoryParking = CategoriaPostoDAO.getCategoria(insert);  // RETURN CATEGORY PARKING
 				hourlyPrice = CategoriaPostoDAO.getPrezzoOrario(categoryParking); 
 				penaltyPrice = CategoriaPostoDAO.getPrezzoPenale(categoryParking); 
 				
@@ -109,7 +109,7 @@ public class TestSql {
 				int posto = AutoDAO.returnPosto(insert); 
 				System.out.println();
 				
-				PostoDAO.updatePostoLibero(posto); // UPDATE POSTO - LO LIBERO
+				PostoDAO.updatePostoLibero(posto); // UPDATE PARKING - PARKING FREE
 				System.out.println();
 				
 				// PAGAMENTO PARCHEGGIO
@@ -165,7 +165,7 @@ public class TestSql {
 						scanner.nextLine();
 						a1.setEntryTime(insert);
 						a1.setIsDeleted(1); // DEFAULT 1 FOR SET PARKING PLACE BUSY
-						System.out.println("INSERT THE PARKING NUMBER CHOSEN BETWEEN THOSE FREE:"); // SI DOVREBBERO VEDERE I POSTI IN BASE ALLA TIPOLOGIA DI AUTO
+						System.out.println("INSERT THE PARKING NUMBER CHOSEN BETWEEN THOSE FREE:"); // RETURN PARKING BY CATEGORY CAR
 						insertNumber = scanner.nextInt();
 						a1.setParkingId(insertNumber);
 						
@@ -219,12 +219,12 @@ public class TestSql {
 						System.out.println("INSERT THE ENTRY TIME DIVIDED BY:");
 						insert = scanner.next();scanner.nextLine();
 						a1.setEntryTime(insert);
-						a1.setIsDeleted(1); // INSERISCO 1 X INDICARE IL POSTO OCCUPATO
-						System.out.println("INSERT THE PARKING NUMBER CHOSEN BETWEEN THOSE FREE :"); // SI DOVREBBERO VEDERE I POSTI IN BASE ALLA TIPOLOGIA DI AUTO
+						a1.setIsDeleted(1); // INSERT 1 FOR POINT TO PARKING BUSY
+						System.out.println("INSERT THE PARKING NUMBER CHOSEN BETWEEN THOSE FREE :"); // RETURN PARKING BY CATEGORY CAR
 						insertNumber = scanner.nextInt();
 						a1.setParkingId(insertNumber);
 						
-						PostoDAO.updatePostoOccupato(insertNumber); // UPDATE FIELD OCCUPATO IN THA DATABASE TABLE
+						PostoDAO.updatePostoOccupato(insertNumber); // UPDATE FIELD OCCUPATO IN DATABASE TABLE
 					}
 				}
 				autodao.insert(a1);
@@ -272,7 +272,7 @@ public class TestSql {
 				break;
 			}
 		
-	}while (exit);
+		}while (exit);
 	}
 	
 	
