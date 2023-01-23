@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * DESIGN PATTERN
  * @author fabio
  *
  */
@@ -22,12 +21,11 @@ public class ConnectionManager {
 	static final String PASS = "";
 	
 	/**
-	 * Quando mi crea l'istanza la prima volta mi crea la connessione 
-	 * poi utilizzero getConnection x la connessione.
+	 * When i create the instance the first time i create the connection 
+	 * then i am will use getConnection for the connection..
+	 * I have a single class and single object to connect to the db.
 	 * 
-	 * Ho un unica classe x collegarmi al db.
-	 * 
-	 * Posso avere mille autodao che recupera la connection e la usa, non la crea ogni volta
+	 * I can have a thousand autodao that fetch the connection and use it, not create it every time
 	 */
 	private ConnectionManager() {
 		try {
