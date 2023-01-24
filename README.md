@@ -18,4 +18,5 @@ When each car arrives, it will be assigned a car place, removing it from the par
 - Run the application directly in your ide. 
 - The database sql file is committed to create it locally.
 - The ConnectionManager class is the class where the connection String, user and password must be inserted.
+
 After that the application can start
