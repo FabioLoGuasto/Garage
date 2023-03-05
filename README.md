@@ -1,4 +1,4 @@
-# GARAGE 
+# MySqlConnectorExample 
 Hi all developers, this is my first project. I'm learning with goal to enter in this world.
 
 This is my first "project", where i manage the entry and exit of cars from a garage.
